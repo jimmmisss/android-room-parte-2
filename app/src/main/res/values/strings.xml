@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Agenda</string>
+    <string name="salvar">Salvar</string>
+    <string name="telefone_fixo">Telefone fixo</string>
+    <string name="telefone_celular">Telefone celular</string>
+    <string name="nome">Nome</string>
+    <string name="sobrenome">Sobreome</string>
+    <string name="email">Email</string>
+    <string name="remover">Remover</string>
+</resources>
