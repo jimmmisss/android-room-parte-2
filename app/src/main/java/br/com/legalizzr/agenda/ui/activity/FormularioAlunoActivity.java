@@ -95,8 +95,8 @@ public class FormularioAlunoActivity extends AppCompatActivity {
     private void finalizaFormulario() {
         preencheAluno();
 
-        Telefone telefoneFixo = criaTelefone(campoTelefoneFixo, FIXO);
-        Telefone telefoneCelular = criaTelefone(campoTelefoneCelular, CELULAR);
+        var telefoneFixo = criaTelefone(campoTelefoneFixo, FIXO);
+        var telefoneCelular = criaTelefone(campoTelefoneCelular, CELULAR);
 
         if (aluno.temIdValido()) {
             editaAluno(telefoneFixo, telefoneCelular);
@@ -108,12 +108,12 @@ public class FormularioAlunoActivity extends AppCompatActivity {
 
     @NonNull
     private Telefone criaTelefone(EditText campoTelefoneFixo, TipoTelefone fixo) {
-        String numeroFixo = campoTelefoneFixo.getText().toString();
+        var numeroFixo = campoTelefoneFixo.getText().toString();
         return new Telefone(numeroFixo, fixo);
     }
 
     private void salvaAluno(Telefone telefoneFixo, Telefone telefoneCelular) {
-        int alunoId = alunoDAO.salva(aluno).intValue();
+        var alunoId = alunoDAO.salva(aluno).intValue();
         vinculaAlunoComTelefone(alunoId, telefoneFixo, telefoneCelular);
         telefoneDAO.salva(telefoneFixo, telefoneCelular);
     }
@@ -150,13 +150,8 @@ public class FormularioAlunoActivity extends AppCompatActivity {
 
     private void preencheAluno() {
         var nome = campoNome.getText().toString();
-        var telefoneFixo = campoTelefoneFixo.getText().toString();
-        var telefoneCelular = campoTelefoneCelular.getText().toString();
         var email = campoEmail.getText().toString();
-
         aluno.setNome(nome);
-//        aluno.setTelefoneFixo(telefoneFixo);
-//        aluno.setTelefoneCelular(telefoneCelular);
         aluno.setEmail(email);
     }
 }

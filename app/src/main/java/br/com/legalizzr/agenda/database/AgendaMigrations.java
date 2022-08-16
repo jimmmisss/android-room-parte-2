@@ -112,5 +112,4 @@ class AgendaMigrations {
             MIGRATION_4_5,
             MIGRATIOM_5_6
     };
-
 }
