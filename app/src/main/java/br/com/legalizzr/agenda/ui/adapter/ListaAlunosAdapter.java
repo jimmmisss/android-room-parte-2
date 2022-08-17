@@ -11,18 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.legalizzr.agenda.R;
+import br.com.legalizzr.agenda.asynctask.BuscaPrimeiroTelefoneDoAlunoTask;
 import br.com.legalizzr.agenda.database.AgendaDatabase;
 import br.com.legalizzr.agenda.database.dao.TelefoneDAO;
 import br.com.legalizzr.agenda.model.Aluno;
 
 public class ListaAlunosAdapter extends BaseAdapter {
+
     private final List<Aluno> alunos = new ArrayList<>();
     private final Context context;
-    private final TelefoneDAO telefoneDAO;
+    private final TelefoneDAO dao;
 
     public ListaAlunosAdapter(Context context) {
         this.context = context;
-        telefoneDAO = AgendaDatabase.getInstance(context).getTelefoneDAO();
+        dao = AgendaDatabase.getInstance(context).getTelefoneDAO();
     }
 
     @Override
@@ -42,8 +44,8 @@ public class ListaAlunosAdapter extends BaseAdapter {
 
     @Override
     public View getView(int posicao, View view, ViewGroup viewGroup) {
-        var viewCriada = criaView(viewGroup);
-        var alunoDevolvido = alunos.get(posicao);
+        View viewCriada = criaView(viewGroup);
+        Aluno alunoDevolvido = alunos.get(posicao);
         vincula(viewCriada, alunoDevolvido);
         return viewCriada;
     }
@@ -52,9 +54,9 @@ public class ListaAlunosAdapter extends BaseAdapter {
         TextView nome = view.findViewById(R.id.item_aluno_nome);
         nome.setText(aluno.getNome());
         TextView telefone = view.findViewById(R.id.item_aluno_telefone);
-
-        var telefoneDoAluno = telefoneDAO.buscaPrimeiroTelefoneDoAluno(aluno.getId());
-        telefone.setText(telefoneDoAluno.getNumero());
+        new BuscaPrimeiroTelefoneDoAlunoTask(dao, aluno.getId(),
+                telefoneEncontrado ->
+                        telefone.setText(telefoneEncontrado.getNumero())).execute();
     }
 
     private View criaView(ViewGroup viewGroup) {
@@ -67,7 +69,6 @@ public class ListaAlunosAdapter extends BaseAdapter {
         this.alunos.clear();
         this.alunos.addAll(alunos);
         notifyDataSetChanged();
-
     }
 
     public void remove(Aluno aluno) {

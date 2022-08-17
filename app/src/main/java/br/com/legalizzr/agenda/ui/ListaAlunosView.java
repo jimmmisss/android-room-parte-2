@@ -6,8 +6,8 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import androidx.annotation.NonNull;
-
+import br.com.legalizzr.agenda.asynctask.BuscaAlunoTask;
+import br.com.legalizzr.agenda.asynctask.RemoveAlunoTask;
 import br.com.legalizzr.agenda.database.AgendaDatabase;
 import br.com.legalizzr.agenda.database.dao.AlunoDAO;
 import br.com.legalizzr.agenda.model.Aluno;
@@ -15,29 +15,25 @@ import br.com.legalizzr.agenda.ui.adapter.ListaAlunosAdapter;
 
 public class ListaAlunosView {
 
-    private final Context context;
     private final ListaAlunosAdapter adapter;
     private final AlunoDAO dao;
+    private final Context context;
 
     public ListaAlunosView(Context context) {
         this.context = context;
         this.adapter = new ListaAlunosAdapter(this.context);
-        dao = AgendaDatabase.getInstance(this.context)
-                .getAlunoDao();
+        dao = AgendaDatabase.getInstance(context).getAlunoDAO();
     }
 
-    public void configuraAdapter(ListView listaAlunos) {
-        listaAlunos.setAdapter(adapter);
-    }
-
-    public void confirmaRemocao(@NonNull final MenuItem item) {
+    public void confirmaRemocao(final MenuItem item) {
         new AlertDialog
                 .Builder(context)
                 .setTitle("Removendo aluno")
-                .setMessage("Está certo de remover aluno?")
+                .setMessage("Tem certeza que quer remover o aluno?")
                 .setPositiveButton("Sim", (dialogInterface, i) -> {
-                    AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                    var alunoEscolhido = adapter.getItem(menuInfo.position);
+                    AdapterView.AdapterContextMenuInfo menuInfo =
+                            (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                    Aluno alunoEscolhido = adapter.getItem(menuInfo.position);
                     remove(alunoEscolhido);
                 })
                 .setNegativeButton("Não", null)
@@ -45,11 +41,14 @@ public class ListaAlunosView {
     }
 
     public void atualizaAlunos() {
-        adapter.atualiza(dao.todos());
+        new BuscaAlunoTask(dao, adapter).execute();
     }
 
     private void remove(Aluno aluno) {
-        dao.remove(aluno);
-        adapter.remove(aluno);
+        new RemoveAlunoTask(dao, adapter, aluno).execute();
+    }
+
+    public void configuraAdapter(ListView listaDeAlunos) {
+        listaDeAlunos.setAdapter(adapter);
     }
 }

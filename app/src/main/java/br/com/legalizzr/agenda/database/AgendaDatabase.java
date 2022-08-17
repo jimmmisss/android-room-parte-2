@@ -22,14 +22,13 @@ public abstract class AgendaDatabase extends RoomDatabase {
 
     private static final String NOME_BANCO_DE_DADOS = "agenda.db";
 
-    public abstract AlunoDAO getAlunoDao();
+    public abstract AlunoDAO getAlunoDAO();
 
     public abstract TelefoneDAO getTelefoneDAO();
 
     public static AgendaDatabase getInstance(Context context) {
         return Room
                 .databaseBuilder(context, AgendaDatabase.class, NOME_BANCO_DE_DADOS)
-                .allowMainThreadQueries()
                 .addMigrations(TODAS_MIGRATIONS)
                 .build();
     }
